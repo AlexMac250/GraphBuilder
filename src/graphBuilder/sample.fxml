@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragExited="#zoom" prefHeight="450.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graphBuilder.Controller">
+   <bottom>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #797F7F;" BorderPane.alignment="CENTER">
+         <items>
+            <Label text="y = " textFill="WHITE">
+               <font>
+                  <Font name="Courier New Bold" size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="funcField" focusTraversable="false" onAction="#clickBuild" onKeyTyped="#clickFuncField" onMouseClicked="#clickFuncField" prefHeight="25.0" prefWidth="290.0" promptText="Введите функцию Пример: 5x*8">
+               <font>
+                  <Font name="Gungsuh" size="12.0" />
+               </font>
+               <effect>
+                  <Lighting bumpInput="$null" diffuseConstant="1.77" specularConstant="0.28" specularExponent="40.0" surfaceScale="0.0">
+                     <light>
+                        <Light.Distant />
+                     </light>
+                  </Lighting>
+               </effect>
+            </TextField>
+            <Button defaultButton="true" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickBuild" prefHeight="25.0" prefWidth="137.0" text="Построить">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Slider fx:id="zoomSlider" max="250.0" min="5.0" onMouseClicked="#zoom" onMouseDragged="#zoom" onMouseReleased="#zoom" showTickMarks="true" value="30.0" />
+         </items>
+      </ToolBar>
+   </bottom>
+   <center>
+      <Canvas fx:id="mainCanvas" height="427.0" onMouseDragged="#move" onMousePressed="#mousePressed" onScroll="#scroll" width="815.0">
+         <cursor>
+            <Cursor fx:constant="CROSSHAIR" />
+         </cursor></Canvas>
+   </center>
+   <top>
+      <MenuBar style="-fx-background-color: #797F7F;" BorderPane.alignment="CENTER">
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" onAction="#showInfo" onMenuValidation="#showInfo">
+               <graphic>
+                  <Label fx:id="labelOfMessages" text="Используйте в качестве переменной только букву &quot;x&quot;" textFill="WHITE" />
+               </graphic>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
