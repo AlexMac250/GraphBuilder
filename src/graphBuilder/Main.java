@@ -152,13 +152,13 @@ public class Main extends Application {
         canvasHeight = canvas.getHeight();
         centerX = canvasWidth/2;
         centerY = canvasHeight/2;
+        gc = canvas.getGraphicsContext2D();
         reDraw(canvas);
         primaryStage.show();
         primaryStage.widthProperty().addListener(e -> onResize(primaryStage));
         primaryStage.heightProperty().addListener(e -> onResize(primaryStage));
         primaryStage.fullScreenProperty().addListener(e -> onResize(primaryStage));
         onResize(primaryStage);
-        gc = canvas.getGraphicsContext2D();
     }
 
     private void onResize(Stage primaryStage){
@@ -352,6 +352,7 @@ class Ideone {
                 stack.push(a / b);
             }
             else if (x.equals("u-")) stack.push(-stack.pop());
+            else if (x.equals("x")) stack.push(10.0);
             else stack.push(Double.valueOf(x));
         }
         return stack.pop();

@@ -37,6 +37,7 @@ public class Controller {
             chordsY.add(/*FUNCTION*/ Math.sin(i));
         }
         labelOfMessages.setText("");
+        Main.reDraw(mainCanvas);
         if (funcField.getText().equals("")) return;
         List<String> expression = ExpressionParser.parse(funcField.getText());
         boolean flag = ExpressionParser.flag;
@@ -55,7 +56,8 @@ public class Controller {
             }
             ((Lighting) funcField.getEffect()).getLight().setColor(COLORS.wrong_color);
         }
-        gc.fillText(funcField.getText()+" = "+String.valueOf(Ideone.calc(ExpressionParser.parse(funcField.getText()))), 10, centerY*2-20);
+        //gc.fillText(funcField.getText()+" = "+String.valueOf(Ideone.calc(ExpressionParser.parse(funcField.getText()))), 10, centerY*2-20);
+        labelOfMessages.setText(funcField.getText()+" = "+String.valueOf(Ideone.calc(ExpressionParser.parse(funcField.getText()))));
         Main.reDraw(mainCanvas);
     }
 
