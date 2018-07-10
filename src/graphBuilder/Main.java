@@ -19,9 +19,9 @@ public class Main extends Application {
     private static double canvasWidth;
     static double centerX;
     static double centerY;
-    static double delta = 0.01;
-    static double startendX = 100;
-    static int scale = 30;
+    static double delta = 0.1;
+    static double startendXY = 500;
+    static int scale = 40;
 
     static ArrayList<Double> chordsY = new ArrayList<>();
     static ArrayList<Double> chordsX = new ArrayList<>();
@@ -30,30 +30,32 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Graph Builder by Aleksandr Vasilenko");
-        primaryStage.setScene(new Scene(root, 810, 540));
-        primaryStage.setMinWidth(655);
+        primaryStage.setScene(new Scene(root, 711, 600));
+        primaryStage.setMinWidth(711);
         primaryStage.setMinHeight(600);
         canvas = ((Canvas) root.lookup("#mainCanvas"));
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
-        centerX = canvasWidth/2;
-        centerY = canvasHeight/2;
+        centerX = canvasWidth / 2;
+        centerY = canvasHeight / 2;
         gc = canvas.getGraphicsContext2D();
-        reDraw(canvas);
         primaryStage.show();
         primaryStage.widthProperty().addListener(e -> onResize(primaryStage));
         primaryStage.heightProperty().addListener(e -> onResize(primaryStage));
         primaryStage.fullScreenProperty().addListener(e -> onResize(primaryStage));
         onResize(primaryStage);
+        draw(canvas);
     }
 
     private void onResize(Stage primaryStage){
         canvas.setWidth(primaryStage.getWidth());
-        canvas.setHeight(primaryStage.getHeight()-100);
-        reDraw(canvas);
+        canvas.setHeight(primaryStage.getHeight() - 100);
+        draw(canvas);
     }
 
-    static void reDraw(Canvas canvas){
+    static void draw(Canvas canvas){
+        if (scale % 2 != 0.0) scale--;
+        if (startendXY % 2 != 0.0) startendXY++;
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
         gc.setFill(COLORS.background);
@@ -62,25 +64,31 @@ public class Main extends Application {
         gc.setStroke(COLORS.btn1);
         gc.setLineWidth(2);
         gc.setLineCap(StrokeLineCap.SQUARE);
-        gc.strokeLine(centerX,20,centerX,canvasHeight-20);
-        gc.strokeLine(centerX+(-startendX*scale)-5,centerY,centerX+(startendX*scale)+10,centerY);
+        gc.strokeLine(centerX,centerY + (-startendXY * scale) - 10,centerX,centerY + (startendXY * scale) + 5);
+        gc.strokeLine(centerX + (-startendXY * scale) - 5,centerY,centerX + (startendXY * scale) + 10, centerY);
         gc.setLineWidth(2);
 
-        for (int i = (int) -startendX; i < startendX + 1;) {
-            if (scale < 10) i+=4;
-            else if (scale < 20) i+=2;
+        for (int i = (int) -startendXY; i < startendXY + 1;) {
+            if (scale < 6) i += 8;
+            else if (scale < 10) i += 4;
+            else if (scale < 20) i += 2;
             else i++;
-            gc.strokeLine(centerX+(i*scale), centerY-4, centerX+(i*scale), centerY+4);
-            gc.fillText(String.valueOf(i), centerX+(i*scale)+5, centerY+15);
-            gc.strokeLine(centerX-4, centerY+(i*scale), centerX+4, centerY+(i*scale));
-            if (i != 0) gc.fillText(String.valueOf(i*(-1)), centerX+12, centerY+(i*scale)+5);
+            gc.strokeLine(centerX + (i*scale), centerY - 4, centerX + (i*scale), centerY+4);
+            gc.strokeLine(centerX - 4, centerY+(i*scale), centerX+4, centerY+(i*scale));
+            if (i != 0) gc.fillText(String.valueOf(i * (-1)), centerX + 12, centerY+(i * scale) + 5);
+            if (i == 0) gc.fillText(String.valueOf(i * (-1)), centerX + 5, centerY+(i * scale) + 15);
+            else gc.fillText(String.valueOf(i), centerX+(i*scale)-5, centerY + 20);
         }
 
         if (scale > 35) {
             gc.setLineWidth(1);
-            for (double i = -startendX; i < startendX + 1; i += 0.1) {
+            for (double i = -startendXY; i < startendXY + 1; i += 0.1) {
                 gc.strokeLine(centerX + (i * scale), centerY - 3, centerX + (i * scale), centerY + 3);
                 gc.strokeLine(centerX - 3, centerY + (i * scale), centerX + 3, centerY + (i * scale));
+                if (scale > 129){
+                    gc.strokeLine(centerX + (i * scale) - scale / 2, centerY - 3, centerX + (i * scale) - scale / 2, centerY + 3);
+                    gc.strokeLine(centerX - 3, centerY + (i * scale), centerX + 3, centerY + (i * scale));
+                }
             }
         }
 
@@ -92,7 +100,7 @@ public class Main extends Application {
         double ly = chordsY.get(0);
         double x;
         double y;
-        for (int i = 1; i <= chordsY.size()-1; i++) {
+        for (int i = 1; i <= chordsY.size() - 1; i++) {
             x = chordsX.get(i);
             y = chordsY.get(i);
             drawLineWithCords(canvas, lx, ly, x, y);
@@ -105,7 +113,7 @@ public class Main extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setLineWidth(1);
         gc.setStroke(COLORS.main_color);
-        gc.strokeLine(centerX+(x1*scale), centerY-(y1*scale), centerX+(x2*scale), centerY-(y2*scale));
+        gc.strokeLine(centerX + (x1 * scale), centerY -(y1 * scale), centerX + (x2 * scale), centerY - (y2 * scale));
     }
 
     public static void main(String[] args) {

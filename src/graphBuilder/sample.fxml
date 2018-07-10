@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragExited="#zoom" prefHeight="450.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graphBuilder.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragExited="#zoom" prefHeight="600.0" prefWidth="695.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graphBuilder.Controller">
    <bottom>
       <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #797F7F;" BorderPane.alignment="CENTER">
          <items>
@@ -36,7 +36,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Slider fx:id="zoomSlider" max="250.0" min="5.0" onMouseClicked="#zoom" onMouseDragged="#zoom" onMouseReleased="#zoom" showTickMarks="true" value="30.0" />
+            <Slider fx:id="zoomSlider" max="250.0" min="5.0" onMouseClicked="#zoom" onMouseDragged="#zoom" onMouseReleased="#zoom" prefHeight="24.0" prefWidth="200.0" showTickMarks="true" value="30.0" />
          </items>
       </ToolBar>
    </bottom>

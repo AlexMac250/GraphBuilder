@@ -6,7 +6,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -32,18 +31,19 @@ public class Controller {
         String func = funcField.getText();
         chordsX.clear();
         chordsY.clear();
-        for (double i = -startendX; i < startendX; i+=delta) {
+        for (double i = -startendXY; i < startendXY; i+=delta) {
             chordsX.add(i);
             chordsY.add(/*FUNCTION*/ Math.sin(i));
         }
         labelOfMessages.setText("");
-        Main.reDraw(mainCanvas);
+        Main.draw(mainCanvas);
         if (funcField.getText().equals("")) return;
         List<String> expression = ExpressionParser.parse(funcField.getText());
         boolean flag = ExpressionParser.flag;
         if (flag) {
-            System.out.println();
-            System.out.println(Ideone.calc(expression));
+            labelOfMessages.setText(funcField.getText()+" = "+String.valueOf(Ideone.calc(expression)));
+//            System.out.println();
+//            System.out.println(Ideone.calc(expression));
         } else {
             switch (ExpressionParser.error){
                 case bracketsNotMatched:
@@ -57,8 +57,7 @@ public class Controller {
             ((Lighting) funcField.getEffect()).getLight().setColor(COLORS.wrong_color);
         }
         //gc.fillText(funcField.getText()+" = "+String.valueOf(Ideone.calc(ExpressionParser.parse(funcField.getText()))), 10, centerY*2-20);
-        labelOfMessages.setText(funcField.getText()+" = "+String.valueOf(Ideone.calc(ExpressionParser.parse(funcField.getText()))));
-        Main.reDraw(mainCanvas);
+        Main.draw(mainCanvas);
     }
 
     private String convert(List<String> postfix){
@@ -70,9 +69,9 @@ public class Controller {
     }
 
     public void zoom() {
+        Main.startendXY = (int) map(scale, zoomSlider.getMin(), zoomSlider.getMax(), 1000, 10);
         Main.scale = (int) zoomSlider.getValue();
-        System.out.println(zoomSlider.getValue());
-        Main.reDraw(mainCanvas);
+        Main.draw(mainCanvas);
     }
 
     public void showInfo(){
@@ -88,7 +87,7 @@ public class Controller {
         centerY -= lyM-y;
         lxM = x;
         lyM = y;
-        Main.reDraw(mainCanvas);
+        Main.draw(mainCanvas);
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
@@ -98,9 +97,9 @@ public class Controller {
 
     public void scroll(ScrollEvent scrollEvent) {
         if (scrollEvent.getDeltaY() > 0){
-            if (!(zoomSlider.getValue() == zoomSlider.getMax())) zoomSlider.setValue(zoomSlider.getValue()+2);
+            if (!(zoomSlider.getValue() == zoomSlider.getMax())) zoomSlider.setValue(zoomSlider.getValue()+8);
         } else {
-            if (!(zoomSlider.getValue() == zoomSlider.getMin())) zoomSlider.setValue(zoomSlider.getValue()-2);
+            if (!(zoomSlider.getValue() == zoomSlider.getMin())) zoomSlider.setValue(zoomSlider.getValue()-8);
         }
         zoom();
     }
@@ -108,4 +107,9 @@ public class Controller {
     public void clickFuncField() {
         ((Lighting) funcField.getEffect()).getLight().setColor(Color.valueOf("#ffffff"));
     }
+
+    double map(long x, double in_min, double in_max, long out_min, long out_max) {
+        return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+    }
+
 }
