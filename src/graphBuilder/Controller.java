@@ -33,6 +33,7 @@ public class Controller {
     public Slider zoomSlider;
     public BorderPane mainPane;
     @FXML Canvas mainCanvas;
+    static boolean isMousePressed;
 
     private static BorderPane mainPaneStat;
 
@@ -71,8 +72,16 @@ public class Controller {
                 return;
             }
             double y = Ideone.calc(polsk);
+
+            y *= 100;
+            y = Math.round(y);
+            y /= 100;
+
             chordsX.add(x);
             chordsY.add(y);
+        }
+        for (int i = 0; i < chordsX.size(); i++) {
+            System.out.println("x="+chordsX.get(i)+", y="+chordsY.get(i));
         }
         Main.draw(mainCanvas);
     }
@@ -128,18 +137,29 @@ public class Controller {
     private double lxM;
     private double lyM;
     public void move(MouseEvent mouseEvent) {
-        double x = mouseEvent.getScreenX();
-        double y = mouseEvent.getScreenY();
+        double x = mouseEvent.getX();
+        double y = mouseEvent.getY();
         centerX -= lxM-x;
         centerY -= lyM-y;
         lxM = x;
         lyM = y;
+        mouseX = mouseEvent.getX();
+        mouseY = mouseEvent.getY();
         Main.draw(mainCanvas);
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
-        lxM = mouseEvent.getScreenX();
-        lyM = mouseEvent.getScreenY();
+        isMousePressed = true;
+        lxM = mouseEvent.getX();
+        lyM = mouseEvent.getY();
+        mouseX = mouseEvent.getX();
+        mouseY = mouseEvent.getY();
+        draw(mainCanvas);
+    }
+
+    public void mouseReleased() {
+        isMousePressed = false;
+        draw(mainCanvas);
     }
 
     public void scroll(ScrollEvent scrollEvent) {

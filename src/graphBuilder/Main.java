@@ -8,10 +8,14 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
+    static double mouseX;
+    static double mouseY;
 
     private static GraphicsContext gc;
     private Canvas canvas;
@@ -69,9 +73,9 @@ public class Main extends Application {
         if (scale > 35) {
             gc.setLineWidth(1);
             for (double i = -startendXY; i < startendXY + 1; i += 0.1) {
-                gc.strokeLine(centerX + (i * scale), centerY - 3, centerX + (i * scale), centerY + 3);
-                gc.strokeLine(centerX - 3, centerY + (i * scale), centerX + 3, centerY + (i * scale));
                 if (i != 0) {
+                    gc.strokeLine(centerX + (i * scale), centerY - 3, centerX + (i * scale), centerY + 3);
+                    gc.strokeLine(centerX - 3, centerY + (i * scale), centerX + 3, centerY + (i * scale));
                     gc.setFill(COLORS.grid01);
                     gc.setStroke(COLORS.grid01);
                     gc.strokeLine(0, centerY + (i * scale), canvasWidth, centerY + (i * scale));           //   horizontal
@@ -102,14 +106,13 @@ public class Main extends Application {
                 gc.strokeLine(centerX-centerX, centerY + (i * scale), canvasWidth, centerY + (i * scale));    //   horizontal
                 gc.strokeLine(centerX + (i * scale), centerY-centerY, centerX + (i * scale), canvasHeight);   //   vertical
 
+                gc.setFill(COLORS.main_grid);
+                gc.setStroke(COLORS.main_grid);
+                gc.setLineWidth(2);
+
+                gc.strokeLine(centerX + (i*scale), centerY - 4, centerX + (i*scale), centerY+4);   //   horizontal
+                gc.strokeLine(centerX - 4, centerY+(i*scale), centerX+4, centerY+(i*scale));       //   vertical
             }
-
-            gc.setFill(COLORS.main_grid);
-            gc.setStroke(COLORS.main_grid);
-            gc.setLineWidth(2);
-
-            gc.strokeLine(centerX + (i*scale), centerY - 4, centerX + (i*scale), centerY+4);   //   horizontal
-            gc.strokeLine(centerX - 4, centerY+(i*scale), centerX+4, centerY+(i*scale));       //   vertical
 
             if (i != 0) gc.fillText(String.valueOf(i * (-1)), centerX + 12, centerY+(i * scale) + 5);
             if (i == 0) gc.fillText(String.valueOf(i * (-1)), centerX + 5, centerY+(i * scale) + 15);
@@ -119,19 +122,38 @@ public class Main extends Application {
         gc.strokeLine(centerX,centerY + (-startendXY * scale) - 10,centerX,centerY + (startendXY * scale) + 5);
         gc.strokeLine(centerX + (-startendXY * scale) - 5,centerY,centerX + (startendXY * scale) + 10, centerY);
 
-        if (chordsY.isEmpty() || chordsX.isEmpty()){
-            return;
+        if (!(chordsY.isEmpty() || chordsX.isEmpty())){
+            double lx = chordsX.get(0);
+            double ly = chordsY.get(0);
+            double x;
+            double y;
+            for (int i = 1; i <= chordsY.size() - 1; i++) {
+                x = chordsX.get(i);
+                y = chordsY.get(i);
+                drawLineWithCords(canvas, lx, ly, x, y);
+                lx = x;
+                ly = y;
+            }
         }
-        double lx = chordsX.get(0);
-        double ly = chordsY.get(0);
-        double x;
-        double y;
-        for (int i = 1; i <= chordsY.size() - 1; i++) {
-            x = chordsX.get(i);
-            y = chordsY.get(i);
-            drawLineWithCords(canvas, lx, ly, x, y);
-            lx = x;
-            ly = y;
+
+        if (Controller.isMousePressed){
+            double dotX = -(centerX-mouseX)/scale;
+            double dotY = (centerY-mouseY)/scale;
+
+            dotX *= 100;
+            dotX = Math.round(dotX);
+            dotX /= 100;
+
+            dotY *= 100;
+            dotY = Math.round(dotY);
+            dotY /= 100;
+
+            String chords = "x: "+String.valueOf(dotX)+" y: "+String.valueOf(dotY);
+            gc.setStroke(COLORS.grid1);
+            gc.setFill(Color.valueOf("#2b2b2b"));
+            gc.fillRoundRect(mouseX+10, mouseY+10, chords.length()*7, 20, 10, 10);
+            gc.setFill(Color.WHITE);
+            gc.fillText(chords, mouseX+28, mouseY+25);
         }
 
     }
@@ -145,6 +167,14 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private static void round(double number, int count){
+
+        for (int i = 0; i < count; i++) {
+
+        }
+
     }
 }
 

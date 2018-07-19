@@ -45,7 +45,7 @@
       </ToolBar>
    </bottom>
    <center>
-      <Canvas fx:id="mainCanvas" height="427.0" onMouseDragged="#move" onMousePressed="#mousePressed" onScroll="#scroll" width="815.0">
+      <Canvas fx:id="mainCanvas" height="427.0" onMouseDragged="#move" onMousePressed="#mousePressed" onMouseReleased="#mouseReleased" onScroll="#scroll" width="815.0">
          <cursor>
             <Cursor fx:constant="CROSSHAIR" />
          </cursor></Canvas>
