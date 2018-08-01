@@ -32,7 +32,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("resources/fxml/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/fxml/main.fxml"));
         primaryStage.setTitle("Graph Builder by Aleksandr Vasilenko БИС-17-02");
         primaryStage.setScene(new Scene(root, 785, 635));
         primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream( "resources/favicon.png" )));
@@ -144,9 +144,9 @@ public class Main extends Application {
             dotX = Math.round(dotX);
             dotX /= 100;
 
-            dotY *= 100;
+            dotY *= 1000;
             dotY = Math.round(dotY);
-            dotY /= 100;
+            dotY /= 1000;
 
             String chords = "x: "+String.valueOf(dotX)+" y: "+String.valueOf(dotY);
             gc.setStroke(COLORS.grid1);

@@ -8,12 +8,18 @@
 
 package graphBuilder;
 
+import com.sun.javafx.cursor.CursorType;
+import com.sun.javafx.cursor.StandardCursorFrame;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -32,6 +38,7 @@ public class Controller {
     public Label labelOfMessages;
     public Slider zoomSlider;
     public BorderPane mainPane;
+    public ProgressIndicator loading;
     @FXML Canvas mainCanvas;
     static boolean isMousePressed;
 
@@ -39,10 +46,12 @@ public class Controller {
 
     public void initialize(){
         mainPaneStat = mainPane;
+        mainCanvas.setCursor(new ImageCursor(new Image(Main.class.getResourceAsStream( "resources/cursor.png" )), 16, 16));
     }
 
     public void clickBuild(){
         if (funcField.getText().equals("")) return;
+        loading.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
         String func = funcField.getText();
         chordsX.clear();
         chordsY.clear();
@@ -54,7 +63,7 @@ public class Controller {
             x = Math.round(x);
             x /= 100;
             List<String> polsk = ExpressionParser.parse(func.replace(value,String.valueOf(x)));
-            if (!ExpressionParser.flag) {
+            if (!ExpressionParser.flag || ExpressionParser.error != null) {
                 switch (ExpressionParser.error){
                     case bracketsNotMatched:
                         showError("Скобки в заданном выражении не согласованы", "err");
@@ -62,13 +71,18 @@ public class Controller {
                     case incorrectExpression:
                         showError("Некорректное выражение", "err");
                         break;
+                    case other:
+                        showError("Ошибка вычисления", "err");
+                        break;
 
                 }
                 ((Lighting) funcField.getEffect()).getLight().setColor(COLORS.wrong_color);
+                loading.setProgress(1);
                 return;
             }
             if(!func.contains(value)) {
                 showError(func+" = "+Ideone.calc(ExpressionParser.parse(func)), "Пример решён)");
+                loading.setProgress(1);
                 return;
             }
             double y = Ideone.calc(polsk);
@@ -84,6 +98,8 @@ public class Controller {
             System.out.println("x="+chordsX.get(i)+", y="+chordsY.get(i));
         }
         Main.draw(mainCanvas);
+        loading.setProgress(1);
+
     }
 
     public void zoom() {

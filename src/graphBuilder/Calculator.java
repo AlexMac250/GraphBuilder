@@ -3,7 +3,7 @@ package graphBuilder;
 import java.util.*;
 
 class Calculator {
-    enum ERROR { bracketsNotMatched, incorrectExpression }
+    enum ERROR { bracketsNotMatched, incorrectExpression, other}
 
     static class ExpressionParser {
         private static String operators = "+-*/";
@@ -40,6 +40,7 @@ class Calculator {
 
         static List<String> parse(String infix) {
             flag = true;
+            error = null;
             List<String> postfix = new ArrayList<>();
             Deque<String> stack = new ArrayDeque<>();
             StringTokenizer tokenizer = new StringTokenizer(infix, delimiters, true);
@@ -109,6 +110,8 @@ class Calculator {
                 }
             } catch (Exception e){
                 Controller.showError(e.toString(), "Исключение!");
+                error = ERROR.other;
+                flag = false;
             }
             return postfix;
         }
@@ -165,6 +168,9 @@ class Calculator {
                     }
                 }
             } catch (Exception e){
+                ExpressionParser.flag = false;
+                ExpressionParser.error = ERROR.other;
+                e.printStackTrace();
                 Controller.showError(e.toString(), "Исключение!");
             }
             return stack.pop();
