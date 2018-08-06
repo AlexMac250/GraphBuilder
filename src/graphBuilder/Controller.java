@@ -8,10 +8,7 @@
 
 package graphBuilder;
 
-import com.sun.javafx.cursor.CursorType;
-import com.sun.javafx.cursor.StandardCursorFrame;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
@@ -58,10 +55,8 @@ public class Controller {
 
         CharSequence value = "x";
 
-        for (double x = -startendXY; x < startendXY; x += delta) {
-            x *= 100;
-            x = Math.round(x);
-            x /= 100;
+        for (double x = -startEndXY; x < startEndXY; x += delta) {
+            x = round(x, 2);
             List<String> polsk = ExpressionParser.parse(func.replace(value,String.valueOf(x)));
             if (!ExpressionParser.flag || ExpressionParser.error != null) {
                 switch (ExpressionParser.error){
@@ -87,15 +82,11 @@ public class Controller {
             }
             double y = Ideone.calc(polsk);
 
-            y *= 100;
-            y = Math.round(y);
-            y /= 100;
+            y = round(y, 2);
 
             chordsX.add(x);
             chordsY.add(y);
-        }
-        for (int i = 0; i < chordsX.size(); i++) {
-            System.out.println("x="+chordsX.get(i)+", y="+chordsY.get(i));
+            //System.out.println("x="+x+", y="+y);
         }
         Main.draw(mainCanvas);
         loading.setProgress(1);
@@ -103,7 +94,7 @@ public class Controller {
     }
 
     public void zoom() {
-        Main.startendXY = (int) map(scale, zoomSlider.getMin(), zoomSlider.getMax(), 1000, 10);
+        Main.startEndXY = (int) map(scale, zoomSlider.getMin(), zoomSlider.getMax(), 1000, 10);
         Main.scale = (int) zoomSlider.getValue();
         Main.draw(mainCanvas);
     }

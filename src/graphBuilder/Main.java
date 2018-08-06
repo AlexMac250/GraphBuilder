@@ -24,7 +24,7 @@ public class Main extends Application {
     static double centerX;
     static double centerY;
     static double delta = 0.01;
-    static double startendXY = 500;
+    static double startEndXY = 500;
     static int scale = 40;
 
     static ArrayList<Double> chordsY = new ArrayList<>();
@@ -60,7 +60,7 @@ public class Main extends Application {
 
     static void draw(Canvas canvas){
         if (scale % 2 != 0.0) scale--;
-        if (startendXY % 2 != 0.0) startendXY++;
+        if (startEndXY % 2 != 0.0) startEndXY++;
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
         gc.setFill(COLORS.background);
@@ -72,7 +72,7 @@ public class Main extends Application {
 
         if (scale > 35) {
             gc.setLineWidth(1);
-            for (double i = -startendXY; i < startendXY + 1; i += 0.1) {
+            for (double i = -startEndXY; i < startEndXY + 1; i += 0.1) {
                 if (i != 0) {
                     gc.strokeLine(centerX + (i * scale), centerY - 3, centerX + (i * scale), centerY + 3);
                     gc.strokeLine(centerX - 3, centerY + (i * scale), centerX + 3, centerY + (i * scale));
@@ -90,7 +90,7 @@ public class Main extends Application {
             }
         }
 
-        for (int i = (int) -startendXY; i < startendXY + 1;) {
+        for (int i = (int) -startEndXY; i < startEndXY + 1;) {
             if (scale < 6) i += 8;
             else if (scale < 10) i += 4;
             else if (scale < 20) i += 2;
@@ -119,8 +119,8 @@ public class Main extends Application {
             else gc.fillText(String.valueOf(i), centerX+(i*scale)-5, centerY + 20);
         }
 
-        gc.strokeLine(centerX,centerY + (-startendXY * scale) - 10,centerX,centerY + (startendXY * scale) + 5);
-        gc.strokeLine(centerX + (-startendXY * scale) - 5,centerY,centerX + (startendXY * scale) + 10, centerY);
+        gc.strokeLine(centerX,centerY + (-startEndXY * scale) - 10,centerX,centerY + (startEndXY * scale) + 5);
+        gc.strokeLine(centerX + (-startEndXY * scale) - 5,centerY,centerX + (startEndXY * scale) + 10, centerY);
 
         if (!(chordsY.isEmpty() || chordsX.isEmpty())){
             double lx = chordsX.get(0);
@@ -140,13 +140,8 @@ public class Main extends Application {
             double dotX = -(centerX-mouseX)/scale;
             double dotY = (centerY-mouseY)/scale;
 
-            dotX *= 100;
-            dotX = Math.round(dotX);
-            dotX /= 100;
-
-            dotY *= 1000;
-            dotY = Math.round(dotY);
-            dotY /= 1000;
+            dotX = round(dotX, 2);
+            dotY = round(dotY, 3);
 
             String chords = "x: "+String.valueOf(dotX)+" y: "+String.valueOf(dotY);
             gc.setStroke(COLORS.grid1);
@@ -169,12 +164,16 @@ public class Main extends Application {
         launch(args);
     }
 
-    private static void round(double number, int count){
-
+    public static double round(double number, int count){
+        int x = 1;
         for (int i = 0; i < count; i++) {
-
+            x*=10;
         }
+        number *= x;
+        number = Math.round(number);
+        number /= x;
 
+        return number;
     }
 }
 
