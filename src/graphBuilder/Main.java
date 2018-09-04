@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
+//import logic.Getter;
 
 public class Main extends Application {
 
@@ -23,12 +24,13 @@ public class Main extends Application {
     private static double canvasWidth;
     static double centerX;
     static double centerY;
-    static double delta = 0.01;
+    static double delta = 1;
     static double startEndXY = 500;
     static int scale = 40;
 
     static ArrayList<Double> chordsY = new ArrayList<>();
     static ArrayList<Double> chordsX = new ArrayList<>();
+    static ArrayList<Double> degs = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -100,6 +102,8 @@ public class Main extends Application {
             gc.setStroke(COLORS.grid1);
             gc.setLineWidth(2);
 
+
+
             if (i != 0) {
                 if (scale > 35) gc.setLineWidth(2);
                 else gc.setLineWidth(1);
@@ -122,12 +126,15 @@ public class Main extends Application {
         gc.strokeLine(centerX,centerY + (-startEndXY * scale) - 10,centerX,centerY + (startEndXY * scale) + 5);
         gc.strokeLine(centerX + (-startEndXY * scale) - 5,centerY,centerX + (startEndXY * scale) + 10, centerY);
 
+
+
+
         if (!(chordsY.isEmpty() || chordsX.isEmpty())){
             double lx = chordsX.get(0);
             double ly = chordsY.get(0);
             double x;
             double y;
-            for (int i = 1; i <= chordsY.size() - 1; i++) {
+            for (int i = 1; i < chordsX.size(); i++) {
                 x = chordsX.get(i);
                 y = chordsY.get(i);
                 drawLineWithCords(canvas, lx, ly, x, y);
@@ -164,7 +171,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static double round(double number, int count){
+    static double round(double number, int count){
         int x = 1;
         for (int i = 0; i < count; i++) {
             x*=10;

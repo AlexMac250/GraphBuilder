@@ -22,12 +22,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
-
 import static graphBuilder.Main.*;
-import static graphBuilder.Calculator.*;
 
 
 public class Controller {
@@ -39,54 +34,30 @@ public class Controller {
     @FXML Canvas mainCanvas;
     static boolean isMousePressed;
 
-    private static BorderPane mainPaneStat;
-
     public void initialize(){
-        mainPaneStat = mainPane;
         mainCanvas.setCursor(new ImageCursor(new Image(Main.class.getResourceAsStream( "resources/cursor.png" )), 16, 16));
+        funcField.setText("1");
     }
 
     public void clickBuild(){
         if (funcField.getText().equals("")) return;
         loading.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-        String func = funcField.getText();
+        String radiusStr = funcField.getText();
         chordsX.clear();
         chordsY.clear();
 
-        CharSequence value = "x";
+        double x;
+        double y;
+        double r = Double.parseDouble(radiusStr);
 
-        for (double x = -startEndXY; x < startEndXY; x += delta) {
-            x = round(x, 2);
-            List<String> polsk = ExpressionParser.parse(func.replace(value,String.valueOf(x)));
-            if (!ExpressionParser.flag || ExpressionParser.error != null) {
-                switch (ExpressionParser.error){
-                    case bracketsNotMatched:
-                        showError("Скобки в заданном выражении не согласованы", "err");
-                        break;
-                    case incorrectExpression:
-                        showError("Некорректное выражение", "err");
-                        break;
-                    case other:
-                        showError("Ошибка вычисления", "err");
-                        break;
-
-                }
-                ((Lighting) funcField.getEffect()).getLight().setColor(COLORS.wrong_color);
-                loading.setProgress(1);
-                return;
-            }
-            if(!func.contains(value)) {
-                showError(func+" = "+Ideone.calc(ExpressionParser.parse(func)), "Пример решён)");
-                loading.setProgress(1);
-                return;
-            }
-            double y = Ideone.calc(polsk);
-
+        for (double t = 0; t <= 360; t += delta) {
+            x = 2*r*Math.cos(Math.toRadians(t)) - r*Math.cos(Math.toRadians(2*t));
+            y = 2*r*Math.sin(Math.toRadians(t)) - r*Math.sin(Math.toRadians(2*t));
+            x = round(x,2);
             y = round(y, 2);
-
             chordsX.add(x);
             chordsY.add(y);
-            //System.out.println("x="+x+", y="+y);
+            degs.add(t);
         }
         Main.draw(mainCanvas);
         loading.setProgress(1);
@@ -97,48 +68,6 @@ public class Controller {
         Main.startEndXY = (int) map(scale, zoomSlider.getMin(), zoomSlider.getMax(), 1000, 10);
         Main.scale = (int) zoomSlider.getValue();
         Main.draw(mainCanvas);
-    }
-
-    static void showError(String message, String type){
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            System.err.println("Error setting native LAF: " + e);
-        }
-        mainPaneStat.setDisable(true);
-        JFrame frame = new JFrame();
-        final JDialog frMess = new JDialog(frame);
-        final JPanel panel = new JPanel();
-        final JPanel panel1 = new JPanel();
-        final JLabel text = new JLabel(message);
-        final JButton butOK = new JButton("Закрыть");
-        switch (type){
-            case "err":
-                frMess.setTitle("Ошибка!");
-                break;
-            case "msg":
-                frMess.setTitle("Сообщение");
-                break;
-            default:
-                frMess.setTitle(type);
-                break;
-        }
-        frMess.setResizable(false);
-        frMess.setAlwaysOnTop(true);
-        frMess.add(panel, BorderLayout.NORTH);
-        frMess.add(panel1, BorderLayout.SOUTH);
-        panel.add(text, BorderLayout.WEST);
-        panel1.add(butOK, BorderLayout.EAST);
-        frMess.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        butOK.addActionListener(e -> {
-            frame.dispose();
-            frMess.dispose();
-            mainPaneStat.setDisable(false);
-        });
-        frMess.pack();
-        frMess.setSize(new Dimension(frMess.getWidth()+70, frMess.getHeight()+20));
-        frMess.setLocationRelativeTo(null);
-        frMess.setVisible(true);
     }
 
     private double lxM;

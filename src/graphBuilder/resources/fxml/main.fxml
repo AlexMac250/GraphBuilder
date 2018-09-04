@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
@@ -20,18 +13,19 @@
 <?import javafx.scene.effect.Light.Distant?>
 <?import javafx.scene.effect.Lighting?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragExited="#zoom" prefHeight="600.0" prefWidth="741.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graphBuilder.Controller">
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragExited="#zoom" prefHeight="600.0" prefWidth="741.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graphBuilder.Controller">
    <bottom>
       <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #797F7F;" BorderPane.alignment="CENTER">
          <items>
-            <Label text="y = " textFill="WHITE">
+            <Label text="Радиус = " textFill="WHITE">
                <font>
                   <Font name="Courier New Bold" size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="funcField" focusTraversable="false" onAction="#clickBuild" onKeyTyped="#clickFuncField" onMouseClicked="#clickFuncField" prefHeight="25.0" prefWidth="290.0" promptText="Введите функцию Пример: 5*x*8">
+            <TextField fx:id="funcField" focusTraversable="false" onAction="#clickBuild" onKeyTyped="#clickFuncField" onMouseClicked="#clickFuncField" prefHeight="25.0" prefWidth="74.0" promptText="Пример: 2">
                <font>
                   <Font name="Gungsuh" size="12.0" />
                </font>
@@ -51,7 +45,7 @@
             <Slider fx:id="zoomSlider" focusTraversable="false" max="250.0" min="5.0" onKeyTyped="#zoom" onMouseClicked="#zoom" onMouseDragged="#zoom" onMouseReleased="#zoom" prefHeight="24.0" prefWidth="200.0" showTickMarks="true" value="30.0" />
             <Pane prefHeight="23.0" prefWidth="41.0">
                <children>
-                  <ProgressIndicator fx:id="loading" prefHeight="33.0" prefWidth="39.0" progress="1.0" style="-fx-background-color: #FFFFFF;" />
+                  <ProgressIndicator fx:id="loading" prefHeight="33.0" prefWidth="39.0" progress="1.0" style="-fx-background-color: #797F7F;" />
                </children>
             </Pane>
          </items>
@@ -68,7 +62,7 @@
          <menus>
             <Menu mnemonicParsing="false">
                <graphic>
-                  <Label fx:id="labelOfMessages" text="Используйте в качестве переменной только букву &quot;x&quot;" textFill="WHITE" />
+                  <Label fx:id="labelOfMessages" text="Построитель функции &quot;Кардиоида&quot;" textFill="WHITE" />
                </graphic>
             </Menu>
          </menus>
