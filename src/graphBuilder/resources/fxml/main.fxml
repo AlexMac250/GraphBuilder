@@ -18,7 +18,7 @@
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragExited="#zoom" prefHeight="600.0" prefWidth="741.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graphBuilder.Controller">
    <bottom>
-      <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #797F7F;" BorderPane.alignment="CENTER">
+      <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #797F7F; -fx-border-color: #797F7F;" BorderPane.alignment="CENTER">
          <items>
             <Label text="Радиус = " textFill="WHITE">
                <font>
@@ -43,9 +43,10 @@
                </font>
             </Button>
             <Slider fx:id="zoomSlider" focusTraversable="false" max="250.0" min="5.0" onKeyTyped="#zoom" onMouseClicked="#zoom" onMouseDragged="#zoom" onMouseReleased="#zoom" prefHeight="24.0" prefWidth="200.0" showTickMarks="true" value="30.0" />
+            <Button fx:id="buttonAnim" mnemonicParsing="false" onAction="#animationClick" style="-fx-background-color: #646969;" text="Анимация" />
             <Pane prefHeight="23.0" prefWidth="41.0">
                <children>
-                  <ProgressIndicator fx:id="loading" prefHeight="33.0" prefWidth="39.0" progress="1.0" style="-fx-background-color: #797F7F;" />
+                  <ProgressIndicator fx:id="loading" prefHeight="33.0" prefWidth="39.0" progress="1.0" style="-fx-background-color: #797F7F; -fx-progress-color: #000000" />
                </children>
             </Pane>
          </items>
@@ -60,9 +61,9 @@
    <top>
       <MenuBar style="-fx-background-color: #797F7F;" BorderPane.alignment="CENTER">
          <menus>
-            <Menu mnemonicParsing="false">
+            <Menu mnemonicParsing="false" onAction="#animationClick">
                <graphic>
-                  <Label fx:id="labelOfMessages" text="Построитель функции &quot;Кардиоида&quot;" textFill="WHITE" />
+                  <Label fx:id="labelOfMessages" text="Построитель графика функции &quot;Кардиоида&quot;" textFill="WHITE" />
                </graphic>
             </Menu>
          </menus>

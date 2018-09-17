@@ -28,9 +28,8 @@ public class Main extends Application {
     static double startEndXY = 500;
     static int scale = 40;
 
-    static ArrayList<Double> chordsY = new ArrayList<>();
-    static ArrayList<Double> chordsX = new ArrayList<>();
-    static ArrayList<Double> degs = new ArrayList<>();
+    static ArrayList<Double> coordsY = new ArrayList<>();
+    static ArrayList<Double> coordsX = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -72,10 +71,11 @@ public class Main extends Application {
         gc.setLineWidth(2);
         gc.setLineCap(StrokeLineCap.SQUARE);
 
-        if (scale > 35) {
+        if (scale > 35) { // при уменьшенном масштабе не отрисовывать
             gc.setLineWidth(1);
             for (double i = -startEndXY; i < startEndXY + 1; i += 0.1) {
                 if (i != 0) {
+                    // рисование маленькой сетки
                     gc.strokeLine(centerX + (i * scale), centerY - 3, centerX + (i * scale), centerY + 3);
                     gc.strokeLine(centerX - 3, centerY + (i * scale), centerX + 3, centerY + (i * scale));
                     gc.setFill(COLORS.grid01);
@@ -102,18 +102,17 @@ public class Main extends Application {
             gc.setStroke(COLORS.grid1);
             gc.setLineWidth(2);
 
-
-
+            // рисование соновных насечек
             if (i != 0) {
                 if (scale > 35) gc.setLineWidth(2);
                 else gc.setLineWidth(1);
                 gc.strokeLine(centerX-centerX, centerY + (i * scale), canvasWidth, centerY + (i * scale));    //   horizontal
                 gc.strokeLine(centerX + (i * scale), centerY-centerY, centerX + (i * scale), canvasHeight);   //   vertical
-
+//
                 gc.setFill(COLORS.main_grid);
                 gc.setStroke(COLORS.main_grid);
                 gc.setLineWidth(2);
-
+//
                 gc.strokeLine(centerX + (i*scale), centerY - 4, centerX + (i*scale), centerY+4);   //   horizontal
                 gc.strokeLine(centerX - 4, centerY+(i*scale), centerX+4, centerY+(i*scale));       //   vertical
             }
@@ -121,28 +120,30 @@ public class Main extends Application {
             if (i != 0) gc.fillText(String.valueOf(i * (-1)), centerX + 12, centerY+(i * scale) + 5);
             if (i == 0) gc.fillText(String.valueOf(i * (-1)), centerX + 5, centerY+(i * scale) + 15);
             else gc.fillText(String.valueOf(i), centerX+(i*scale)-5, centerY + 20);
-        }
 
+            gc.fillText("X", canvasWidth - 30, centerY - 15);
+            gc.fillText("Y", centerX - 19, 18);
+        }
+        // рисование осей координат
         gc.strokeLine(centerX,centerY + (-startEndXY * scale) - 10,centerX,centerY + (startEndXY * scale) + 5);
         gc.strokeLine(centerX + (-startEndXY * scale) - 5,centerY,centerX + (startEndXY * scale) + 10, centerY);
 
-
-
-
-        if (!(chordsY.isEmpty() || chordsX.isEmpty())){
-            double lx = chordsX.get(0);
-            double ly = chordsY.get(0);
+        // если есть график, то нарисовать график
+        if (!(coordsY.isEmpty() || coordsX.isEmpty())){
+            double lx = coordsX.get(0);
+            double ly = coordsY.get(0);
             double x;
             double y;
-            for (int i = 1; i < chordsX.size(); i++) {
-                x = chordsX.get(i);
-                y = chordsY.get(i);
+            for (int i = 1; i < coordsX.size(); i++) {
+                x = coordsX.get(i);
+                y = coordsY.get(i);
                 drawLineWithCords(canvas, lx, ly, x, y);
                 lx = x;
                 ly = y;
             }
         }
 
+        // отрисока координат нахожнения мыши
         if (Controller.isMousePressed){
             double dotX = -(centerX-mouseX)/scale;
             double dotY = (centerY-mouseY)/scale;
@@ -150,12 +151,12 @@ public class Main extends Application {
             dotX = round(dotX, 2);
             dotY = round(dotY, 3);
 
-            String chords = "x: "+String.valueOf(dotX)+" y: "+String.valueOf(dotY);
+            String coordinates = "x: "+String.valueOf(dotX)+" y: "+String.valueOf(dotY);
             gc.setStroke(COLORS.grid1);
             gc.setFill(Color.valueOf("#2b2b2b"));
-            gc.fillRoundRect(mouseX+10, mouseY+10, chords.length()*7, 20, 10, 10);
+            gc.fillRoundRect(mouseX+10, mouseY+10, coordinates.length()*7, 20, 10, 10);
             gc.setFill(Color.WHITE);
-            gc.fillText(chords, mouseX+28, mouseY+25);
+            gc.fillText(coordinates, mouseX+28, mouseY+25);
         }
 
     }

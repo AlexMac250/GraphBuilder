@@ -8,12 +8,13 @@
 
 package graphBuilder;
 
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.ImageCursor;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
@@ -21,8 +22,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 import static graphBuilder.Main.*;
+import static graphBuilder.Calculator.*;
 
 
 public class Controller {
@@ -31,37 +35,74 @@ public class Controller {
     public Slider zoomSlider;
     public BorderPane mainPane;
     public ProgressIndicator loading;
+    public Button buttonAnim;
     @FXML Canvas mainCanvas;
     static boolean isMousePressed;
 
+    private static BorderPane mainPaneStat;
+
     public void initialize(){
+        mainPaneStat = mainPane;
         mainCanvas.setCursor(new ImageCursor(new Image(Main.class.getResourceAsStream( "resources/cursor.png" )), 16, 16));
-        funcField.setText("1");
+        funcField.setText("2");
     }
 
     public void clickBuild(){
-        if (funcField.getText().equals("")) return;
-        loading.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-        String radiusStr = funcField.getText();
-        chordsX.clear();
-        chordsY.clear();
+        try {
+            if (funcField.getText().equals("")) return;
+            String radiusStr = funcField.getText();
+            coordsX.clear();
+            coordsY.clear();
 
-        double x;
-        double y;
-        double r = Double.parseDouble(radiusStr);
+            double x;
+            double y;
+            double r = Ideone.calc(ExpressionParser.parse(radiusStr));
+            if (!ExpressionParser.flag){
+                switch (ExpressionParser.error){
+                    case bracketsNotMatched:
+                        showError("Скобки не согласованы!", "err");
+                        break;
+                    case incorrectExpression:
+                        showError("Некорректное выражение", "err");
+                        break;
+                }
+                return;
+            }
 
-        for (double t = 0; t <= 360; t += delta) {
-            x = 2*r*Math.cos(Math.toRadians(t)) - r*Math.cos(Math.toRadians(2*t));
-            y = 2*r*Math.sin(Math.toRadians(t)) - r*Math.sin(Math.toRadians(2*t));
-            x = round(x,2);
-            y = round(y, 2);
-            chordsX.add(x);
-            chordsY.add(y);
-            degs.add(t);
+            for (double t = 0; t <= 360; t += delta) {
+
+                x = 2 * r * Math.cos(Math.toRadians(t)) - r * Math.cos(Math.toRadians(2 * t));
+                y = 2 * r * Math.sin(Math.toRadians(t)) - r * Math.sin(Math.toRadians(2 * t));
+
+                x = round(x, 4);
+                y = round(y, 4);
+                coordsX.add(x);
+                coordsY.add(y);
+            }
+            Main.draw(mainCanvas);
+        } catch (Exception e) {
+            showError(e.toString(), "err");
         }
-        Main.draw(mainCanvas);
-        loading.setProgress(1);
 
+    }
+
+    static void showError(String message, String type){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        switch (type){
+            case "err":
+                alert.setAlertType(Alert.AlertType.ERROR);
+                alert.setTitle("Произошла ошибка!");
+                alert.setHeaderText("Операция не может быть выполнена!");
+                break;
+            case "msg":
+                alert.setTitle("Сообщение");
+                alert.setHeaderText("Сообщение:");
+                break;
+            default:
+                break;
+        }
+        alert.setContentText(message);
+        alert.show();
     }
 
     public void zoom() {
@@ -85,11 +126,16 @@ public class Controller {
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
+        if (mouseEvent.isShiftDown()){
+            centerX = mainCanvas.getWidth() / 2;
+            centerY = mainCanvas.getHeight() / 2;
+        }
         isMousePressed = true;
         lxM = mouseEvent.getX();
         lyM = mouseEvent.getY();
         mouseX = mouseEvent.getX();
         mouseY = mouseEvent.getY();
+
         draw(mainCanvas);
     }
 
@@ -116,4 +162,48 @@ public class Controller {
         return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
     }
 
+
+    private Circle circle = new Circle();
+    private TranslateTransition transition = new TranslateTransition(Duration.millis(1), circle);
+    private int countMove = 1;
+
+    private double getXByCoordinates(double x){
+        double centerXRoot = mainCanvas.getLayoutX() + centerX;
+        return centerXRoot + (x*scale);
+    }
+
+    private double getYByCoordinates(double y){
+        double centerYRoot = mainCanvas.getLayoutY() + centerY;
+        return centerYRoot - (y*scale);
+    }
+
+    public void animationClick() {
+        if (coordsX.isEmpty()){
+            showError("Нет графика!", "err");
+            return;
+        }
+        loading.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+        buttonAnim.setDisable(true);
+        countMove = 1;
+        circle.setRadius(25);
+        circle.setCenterX(coordsX.get(0));
+        circle.setCenterY(coordsY.get(0));
+        circle.setFill(Color.RED);
+        mainPane.getChildren().add(circle);
+        moveTo(getXByCoordinates(coordsX.get(countMove)), getYByCoordinates(coordsY.get(countMove)));
+    }
+
+    private void moveTo(double x, double y){
+        if (countMove >= coordsX.size()-1){
+            mainPane.getChildren().remove(circle);
+            buttonAnim.setDisable(false);
+            loading.setProgress(1);
+            return;
+        }
+        transition.setToX(x-circle.getCenterX());
+        transition.setToY(y-circle.getCenterY());
+        transition.play();
+        transition.setOnFinished(event -> moveTo(getXByCoordinates(coordsX.get(countMove)), getYByCoordinates(coordsY.get(countMove))));
+        countMove++;
+    }
 }
