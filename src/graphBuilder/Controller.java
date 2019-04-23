@@ -39,10 +39,7 @@ public class Controller {
     @FXML Canvas mainCanvas;
     static boolean isMousePressed;
 
-    private static BorderPane mainPaneStat;
-
     public void initialize(){
-        mainPaneStat = mainPane;
         mainCanvas.setCursor(new ImageCursor(new Image(Main.class.getResourceAsStream( "resources/cursor.png" )), 16, 16));
         funcField.setText("2");
     }
@@ -111,6 +108,8 @@ public class Controller {
         Main.draw(mainCanvas);
     }
 
+
+
     private double lxM;
     private double lyM;
     public void move(MouseEvent mouseEvent) {
@@ -157,16 +156,22 @@ public class Controller {
         ((Lighting) funcField.getEffect()).getLight().setColor(Color.valueOf("#ffffff"));
     }
 
+    //подстройка числа по диапазону к другому распределяя пропорционально [ пример: map(127, 0, 255, 0, 100) = 50 ]
     @SuppressWarnings("SameParameterValue")
     private double map(long x, double in_min, double in_max, long out_min, long out_max) {
         return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
     }
 
+    //                  ||
+    //---ANIMATION---   ||
+    //                 \||/
+    //                  \/
 
     private Circle circle = new Circle();
     private TranslateTransition transition = new TranslateTransition(Duration.millis(1), circle);
     private int countMove = 1;
 
+    //получение координат canvas через координаты сетки
     private double getXByCoordinates(double x){
         double centerXRoot = mainCanvas.getLayoutX() + centerX;
         return centerXRoot + (x*scale);
@@ -177,6 +182,7 @@ public class Controller {
         return centerYRoot - (y*scale);
     }
 
+    //нажатие кнопки
     public void animationClick() {
         if (coordsX.isEmpty()){
             showError("Нет графика!", "err");
@@ -203,6 +209,7 @@ public class Controller {
         transition.setToX(x-circle.getCenterX());
         transition.setToY(y-circle.getCenterY());
         transition.play();
+        //последовательное выполнение перемещений
         transition.setOnFinished(event -> moveTo(getXByCoordinates(coordsX.get(countMove)), getYByCoordinates(coordsY.get(countMove))));
         countMove++;
     }

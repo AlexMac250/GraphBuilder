@@ -2,6 +2,7 @@ package graphBuilder;
 
 import java.util.*;
 
+//данный класс отвечает за вычисления выражения в поле ввода
 
 class Calculator {
     enum ERROR { bracketsNotMatched, incorrectExpression}

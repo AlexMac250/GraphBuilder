@@ -102,7 +102,7 @@ public class Main extends Application {
             gc.setStroke(COLORS.grid1);
             gc.setLineWidth(2);
 
-            // рисование соновных насечек
+            // рисование основных насечек
             if (i != 0) {
                 if (scale > 35) gc.setLineWidth(2);
                 else gc.setLineWidth(1);
@@ -143,7 +143,7 @@ public class Main extends Application {
             }
         }
 
-        // отрисока координат нахожнения мыши
+        // отрисока координат местонахожнения мыши
         if (Controller.isMousePressed){
             double dotX = -(centerX-mouseX)/scale;
             double dotY = (centerY-mouseY)/scale;
@@ -151,7 +151,7 @@ public class Main extends Application {
             dotX = round(dotX, 2);
             dotY = round(dotY, 3);
 
-            String coordinates = "x: "+String.valueOf(dotX)+" y: "+String.valueOf(dotY);
+            String coordinates = "x: "+ dotX +" y: "+ dotY;
             gc.setStroke(COLORS.grid1);
             gc.setFill(Color.valueOf("#2b2b2b"));
             gc.fillRoundRect(mouseX+10, mouseY+10, coordinates.length()*7, 20, 10, 10);
@@ -161,6 +161,7 @@ public class Main extends Application {
 
     }
 
+    //нарисовать линию в соответствии с координатами сетки
     private static void drawLineWithCords(Canvas canvas, double x1, double y1, double x2, double y2){
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setLineWidth(1);
@@ -172,6 +173,7 @@ public class Main extends Application {
         launch(args);
     }
 
+    //костыль округления (я хз почему не работает по нормальному) round(число, количество после запятой)
     static double round(double number, int count){
         int x = 1;
         for (int i = 0; i < count; i++) {
